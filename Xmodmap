@@ -1,0 +1,5 @@
+! Swap caps_lock with backslash
+clear Lock
+keycode 66 = backslash bar
+keycode 51 = Caps_Lock
+keycode 107 = Super_R
