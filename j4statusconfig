@@ -1,0 +1,67 @@
+[Plugins]
+Output=i3bar
+Input=mpd;pulseaudio;nm;upower;time
+
+[CPULoad]
+Frequency=2
+
+[Override cpu]
+Label=cpu
+
+[Memory]
+Frequency=5
+
+[Override mem]
+Label=mem
+
+[Filesystem]
+Names=home
+
+[Filesystem home]
+Format=${p_used}%
+Label=home
+Device=/dev/mapper/MyStorage-homevol
+
+[Time]
+Zones=America/Los_Angeles;Europe/London
+Formats=%a %d %b %T;%T %Z
+
+[NetworkManager]
+Interfaces=enp0s25;wlp3s0
+HideUnavailable=true
+
+[NetworkManager Formats]
+Addresses=IPv4
+UpWiFi=${addresses}${ (<ssid>)}
+
+[Sensors]
+Sensors=coretemp-isa-0000
+
+[Override sensors:coretemp-isa-0000/temp2]
+Disable=true
+[Override sensors:coretemp-isa-0000/temp3]
+Disable=true
+[Override sensors:coretemp-isa-0000/temp1]
+Label=🌡
+
+[MPD]
+Host=127.0.0.1
+Port=6600
+
+[MPD 127.0.0.1]
+Format=${song}
+
+[Override mpd:127.0.0.1]
+Label=🎵
+
+[Override pulseaudio:alsa_output.pci-0000_00_1b.0.analog-stereo]
+Label=🔊
+
+[Override upower-battery:BAT0]
+Label=♥
+
+[Override nm-wifi:wlp3s0]
+Label=📶
+
+[Override nm-ethernet:enp0s25]
+Label=⇄

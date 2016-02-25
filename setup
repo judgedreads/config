@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+
+import os
+import argparse
+
+core = [
+    ('vimrc', '~/.vimrc'),
+    ('bashrc', '~/.bashrc'),
+    ('tmux.conf', '~/.tmux.conf'),
+    ('python2rc', '~/.python2rc'),
+    ('Xmodmap', '~/.Xmodmap'),
+]
+
+extra = [
+    ('mpd.conf', '~/.mpd/mpd.conf'),
+    ('abcde.conf', '~/.abcde.conf'),
+    ('i3config', '~/.i3/config'),
+    ('j4statusconfig', '~/.config/j4status/config'),
+]
+
+
+def link(src, dst):
+    src = os.path.abspath(src)
+    dst = os.path.expanduser(dst)
+    dirname, fname = os.path.split(dst)
+    if not os.path.isdir(dirname):
+        os.path.makedirs(dirname)
+    if os.path.exists(dst):
+        os.rename(dst, dst+'.bak')
+    os.symlink(src, dst)
+
+
+def install(group):
+    if group in ['extra', 'all']:
+        links = core + extra
+    elif group == 'core':
+        links = core
+    for src, dst in links:
+        link(src, dst)
+
+if __name__ == "__main__":
+    core_srcs = [src for src, _ in core]
+    extra_srcs = [src for src, _ in extra]
+    d = '''
+    Install groups of config files.\n
+    Groups:\n
+      core  = %s\n
+      extra = %s\n
+    (Note that extra includes core)
+      ''' % (core_srcs, extra_srcs)
+    parser = argparse.ArgumentParser(
+        description=d,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('group',
+                        choices=['core', 'extra', 'all'],
+                        default='all',
+                        help='the group of files to install')
+    args = parser.parse_args()
