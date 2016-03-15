@@ -1,6 +1,9 @@
 [Plugins]
 Output=i3bar
-Input=mpd;pulseaudio;nm;upower;time
+Input=mpd;nm;upower;time
+
+[Mpris]
+Player=mpd
 
 [CPULoad]
 Frequency=2
@@ -32,7 +35,8 @@ HideUnavailable=true
 
 [NetworkManager Formats]
 Addresses=IPv4
-UpWiFi=${addresses}${ (<ssid>)}
+UpWiFi=${ssid} (${strength>%})
+UpEthernet=${speed}
 
 [Sensors]
 Sensors=coretemp-isa-0000
