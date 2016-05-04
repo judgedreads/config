@@ -9,8 +9,8 @@
 #
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
-exec --no-startup-id sh ~/.fehbg &
 exec --no-startup-id synclient TouchpadOff=1
+exec_always --no-startup-id sh ~/.fehbg &
 exec_always --no-startup-id killall dunst
 exec_always --no-startup-id dunst &
 exec_always --no-startup-id xmodmap ~/.Xmodmap
@@ -20,7 +20,7 @@ exec_always --no-startup-id rofi -key-run F2 &
 
 set $mod Mod4
 set $font Sans
-set $fsize 10
+set $fsize 7
 
 set $fg #bbbbbb
 set $bg #242424
@@ -31,7 +31,7 @@ set $urgent #990000
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font xft:$font $fsize
+font pango:$font $fsize
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
@@ -56,7 +56,7 @@ client.background       #ffffff
 
 hide_edge_borders both
 new_window pixel 1
-new_float none
+new_float pixel 1
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -68,7 +68,7 @@ bindsym $mod+Return exec --no-startup-id st
 bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
-bindsym $mod+a exec --no-startup-id j4-dmenu-desktop --dmenu="rofi -dmenu -p 'launch:' -i" --term="st"
+bindsym $mod+a exec --no-startup-id j4-dmenu-desktop --dmenu="rofi -dmenu -p 'launch:' -i" --term="st" --no-generic
 bindsym $mod+o exec --no-startup-id xdg-open "$(find ~ -type f -not -path '*/.*' | rofi -dmenu -p 'open:' -i)"
 
 # There also is the (new) i3-dmenu-desktop which only displays applications
@@ -252,8 +252,8 @@ assign [class="Ricochet"] $WS3
 # finds out, if available)
 bar {
 	position top
-        #status_command /home/judgedreads/projects/src/g5status/g5status
-        status_command j4status
+        status_command /home/judgedreads/projects/src/g5status/g5status -output flat
+        #status_command j4status
 	strip_workspace_numbers yes
 	#font xft:$font Bold $fsize
 
