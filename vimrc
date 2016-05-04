@@ -3,6 +3,7 @@ syntax on
 set background=dark
 let base16colorspace=256
 colorscheme base16-default
+highlight Search ctermfg=black
 filetype plugin indent on
 
 "tabs
@@ -20,6 +21,7 @@ set number
 set relativenumber
 highlight LineNr ctermbg=None
 highlight CursorLineNr ctermbg=None
+highlight SignColumn ctermbg=None
 
 "ruler with filename and cursor position
 "set laststatus=2
@@ -48,6 +50,8 @@ set hidden
 let mapleader = "\<Space>"
 nnoremap <Leader>j :bp<CR>
 nnoremap <Leader>k :bn<CR>
+nnoremap <Leader>l :lnext<CR>
+nnoremap <Leader>h :lprev<CR>
 nnoremap <Leader>c :noh<CR>
 nnoremap <Leader>f za
 nnoremap <Leader>ww :w<CR>
@@ -63,9 +67,11 @@ nmap <Leader>p "+p
 nmap <Leader>P "+P
 vmap <Leader>p "+p
 vmap <Leader>P "+P
+nnoremap qq <NOP>
 
 "tabs for make files
 autocmd FileType make setlocal noexpandtab
+autocmd BufNewFile,BufRead *.tex setlocal fo+=t tw=79
 
 "normal tab complete
 set wildmode=longest,list,full
@@ -74,9 +80,21 @@ set wildignore+=*/__pycache__/*,*/dist/*,*/Godeps/*,*.pyc,*.pyo,*.swp
 
 "git
 let g:gitgutter_enabled = 0
+highlight GitGutterAdd ctermbg=None ctermfg=10
+highlight GitGutterChange ctermbg=None ctermfg=14
+highlight GitGutterDelete ctermbg=None ctermfg=9
+highlight GitGutterChangeDelete ctermbg=None ctermfg=9
+let g:gitgutter_sign_added = '++'
+let g:gitgutter_sign_modified = '>>'
+let g:gitgutter_sign_removed = 'xx'
+let g:gitgutter_sign_removed_first_line = '^^'
+let g:gitgutter_sign_modified_removed = '>x'
 nnoremap <Leader>g :GitGutterToggle<CR>
 
 "python
+let g:pymode_options_max_line_length = 79
+let g:pymode_lint_options_pep8 = {'max_line_length': g:pymode_options_max_line_length}
+let g:pymode_lint_options_pylint = {'max-line-length': g:pymode_options_max_line_length}
 let g:pymode_virtualenv = 0
 let g:pymode_breakpoint = 0
 let g:pymode_folding = 0
@@ -98,3 +116,21 @@ let g:pymode_run_bind = 0
 " McCabe complexity set very high to avoid really annoying stuff happening in
 " most previously-unchecked files.
 "let g:pymode_lint_options_mccabe = {'complexity': 30}
+
+" Use git grep if we are in a git repo, else use ag (if it were easy to
+" make ag search from the project root, I would just use ag)
+let output=system('git status')
+if !v:shell_error
+  set grepprg=git\ grep\ -n
+  set grepformat=%f:%l:%m
+elseif executable('ag')
+  set grepprg=ag\ --vimgrep\ -s
+  set grepformat=%f:%l:%c:%m
+endif
+
+" binding to search for word under cursor in files with same extension
+nnoremap <Leader>ss /<C-R><C-W><CR>:grep! -w -F
+            \ "<C-R><C-W>"
+            \ <CR>:cw<CR>
+" regex to search files with the same extension
+".*<C-R>=(expand("%:e")=="" ? "" : "\.".expand("%:e"))<CR>
