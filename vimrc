@@ -1,12 +1,22 @@
-execute pathogen#infect()
-execute pathogen#helptags()
-syntax on
-"set background=dark
+call plug#begin('~/.vim/bundle')
+Plug 'airblade/vim-gitgutter'
+Plug 'chriskempson/base16-vim'
+Plug 'derekwyatt/vim-scala'
+Plug 'fatih/vim-go'
+Plug 'hynek/vim-python-pep8-indent'
+Plug 'IN3D/vim-raml'
+Plug 'junegunn/fzf'
+Plug 'junegunn/vim-easy-align'
+Plug 'lervag/vimtex'
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'tell-k/vim-autopep8'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-surround'
+Plug 'vim-syntastic/syntastic'
+call plug#end()
 let base16colorspace=256
-colorscheme base16-default-dark
-"highlight Normal ctermbg=None
-"highlight Search ctermfg=black
-filetype plugin indent on
+colorscheme base16-monokai
 
 "to show matching brackets
 set showmatch
@@ -49,8 +59,6 @@ nnoremap <Leader>q :q<CR>
 nnoremap <Leader>wq :wq<CR>
 nnoremap <Leader>wa :wa<CR>
 nnoremap <Leader>x :bd<CR>
-nnoremap <Leader>e :CtrlP<CR>
-nnoremap <leader>b :CtrlPBuffer<CR>
 vmap <Leader>y "+y
 vmap <Leader>d "+d
 nmap <Leader>p "+p
@@ -89,8 +97,6 @@ set formatoptions-=t
 if executable('ag')
   set grepprg=ag\ --vimgrep\ -s
   set grepformat=%f:%l:%c:%m
-  let g:ctrlp_user_command = 'cd %s && ag -l --nocolor'
-  let g:ctrlp_use_caching = 0
 endif
 
 command -nargs=+ -complete=file -bar Grep silent! grep! <args>|cwindow|redraw!
@@ -104,9 +110,35 @@ nnoremap <Leader>ss /<C-R><C-W><CR>:grep! -w -F
 " regex to search files with the same extension
 ".*<C-R>=(expand("%:e")=="" ? "" : "\.".expand("%:e"))<CR>
 
-let g:ctrlp_working_path_mode = 'ra'
 
 autocmd BufWritePre <buffer> StripWhitespace
 
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
+
+" syntastic
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+let g:syntastic_python_checkers = ['pyflakes', 'pycodestyle']
+let g:syntastic_python_pycodestyle_args = '--ignore="E501"'
+let g:syntastic_go_checkers = ['govet']
+
+" Strip the newline from the end of a string
+function! Chomp(str)
+  return substitute(a:str, '\n$', '', '')
+endfunction
+
+" Find a file and pass it to cmd
+function! DmenuOpen()
+  let fname = Chomp(system("ag -g '' | dmenu -i -l 20 -p 'edit'"))
+  if empty(fname)
+    return
+  endif
+  execute "e" . " " . fname
+endfunction
+
+"File finding
+nnoremap <Leader>e :FZF<CR>
+nnoremap <leader>b :call fzf#run({'source': map(range(1, bufnr('$')), 'bufname(v:val)'), 'sink': 'e', 'down': '30%'})<CR>

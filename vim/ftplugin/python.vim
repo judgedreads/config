@@ -11,12 +11,9 @@ setlocal foldmethod=indent
 setlocal foldlevel=99
 
 "format code on write
-autocmd BufWritePre <buffer> Autopep8
+"autocmd BufWritePre <buffer> Autopep8
 let g:autopep8_ignore="E501"
 let g:autopep8_disable_show_diff=1
-
-"lint code after write
-autocmd BufWritePost <buffer> call Flake8()
 
 let python_highlight_all=1
 
