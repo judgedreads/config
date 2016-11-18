@@ -111,7 +111,7 @@ nnoremap <Leader>ss /<C-R><C-W><CR>:grep! -w -F
 ".*<C-R>=(expand("%:e")=="" ? "" : "\.".expand("%:e"))<CR>
 
 
-autocmd BufWritePre <buffer> StripWhitespace
+"autocmd BufWritePre <buffer> StripWhitespace
 
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
