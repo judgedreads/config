@@ -7,9 +7,18 @@
  */
 static char font[] = "monospace:pixelsize=14:antialias=false:autohint=false";
 static int borderpx = 2;
+
+/*
+ * What program is execed by st depends of these precedence rules:
+ * 1: program passed with -e
+ * 2: utmp option
+ * 3: SHELL environment variable
+ * 4: value of shell in /etc/passwd
+ * 5: value of shell in config.h
+ */
 static char shell[] = "/bin/sh";
 static char *utmp = NULL;
-static char stty_args[] = "stty raw -echo -iexten echonl";
+static char stty_args[] = "stty raw pass8 nl -echo -iexten -cstopb 38400";
 
 /* identification sequence returned in DA and DECID */
 static char vtiden[] = "\033[?6c";
@@ -23,14 +32,14 @@ static float chscale = 1.0;
  *
  * More advanced example: " `'\"()[]{}"
  */
-static char worddelimiters[] = " ";
+static char worddelimiters[] = " '\"()[]{}|";
 
 /* selection timeouts (in milliseconds) */
 static unsigned int doubleclicktimeout = 300;
 static unsigned int tripleclicktimeout = 600;
 
 /* alt screens */
-static bool allowaltscreen = true;
+static int allowaltscreen = 1;
 
 /* frames per second st should at maximum draw to the screen */
 static unsigned int xfps = 120;
@@ -53,121 +62,152 @@ static unsigned int cursorthickness = 2;
  */
 static int bellvolume = 0;
 
-/* TERM value */
+/* default TERM value */
 static char termname[] = "xterm-256color";
 
+/*
+ * spaces per tab
+ *
+ * When you are changing this value, don't forget to adapt the »it« value in
+ * the st.info and appropriately install the st.info in the environment where
+ * you use this st version.
+ *
+ *	it#$tabspaces,
+ *
+ * Secondly make sure your kernel is not expanding tabs. When running `stty
+ * -a` »tab0« should appear. You can tell the terminal to not expand tabs by
+ *  running following command:
+ *
+ *	stty tabs
+ */
 static unsigned int tabspaces = 8;
-
-static char base00[] = "#181818";
-static char base01[] = "#282828";
-static char base02[] = "#383838";
-static char base03[] = "#585858";
-static char base04[] = "#b8b8b8";
-static char base05[] = "#d8d8d8";
-static char base06[] = "#e8e8e8";
-static char base07[] = "#f8f8f8";
-static char base08[] = "#ab4642";
-static char base09[] = "#dc9656";
-static char base0A[] = "#f7ca88";
-static char base0B[] = "#a1b56c";
-static char base0C[] = "#86c1b9";
-static char base0D[] = "#7cafc2";
-static char base0E[] = "#ba8baf";
-static char base0F[] = "#a16946";
 
 /* Terminal colors (16 first used in escape sequence) */
 static const char *colorname[] = {
-	/* default
-	// 8 normal colors
-	"black",
-	"red3",
-	"green3",
-	"yellow3",
-	"blue2",
-	"magenta3",
-	"cyan3",
-	"gray90",
+	/* 8 normal colors */
+	/* "black", */
+	/* "red3", */
+	/* "green3", */
+	/* "yellow3", */
+	/* "blue2", */
+	/* "magenta3", */
+	/* "cyan3", */
+	/* "gray90", */
 
-	// 8 bright colors
-	"gray50",
-	"red",
-	"green",
-	"yellow",
-	"#5c5cff",
-	"magenta",
-	"cyan",
-	"white",
+	/* /1* 8 bright colors *1/ */
+	/* "gray50", */
+	/* "red", */
+	/* "green", */
+	/* "yellow", */
+	/* "#5c5cff", */
+	/* "magenta", */
+	/* "cyan", */
+	/* "white", */
+
+	/* base16 monokai */
+	/* #272822 //0 */
+	/* #f92672 //8 */
+	/* #a6e22e //b */
+	/* #f4bf75 //a */
+	/* #66d9ef //d */
+	/* #ae81ff //e */
+	/* #a1efe4 //c */
+	/* #f8f8f2 //5 */
+	/* #75715e //3 */
+	/* #fd971f //9 */
+	/* #383830 //1 */
+	/* #49483e //2 */
+	/* #a59f85 //4 */
+	/* #f5f4f1 //6 */
+	/* #cc6633 //f */
+	/* #f9f8f5 //7 */
+
+
+	/* monokai */
+	/* "#272822", */
+	/* "#f92672", */
+	/* "#a6e22e", */
+	/* "#f4bf75", */
+	/* "#66d9ef", */
+	/* "#ae81ff", */
+	/* "#a1efe4", */
+	/* "#f8f8f2", */
+	/* "#75715e", */
+	/* "#f92672", */
+	/* "#a6e22e", */
+	/* "#f4bf75", */
+	/* "#66d9ef", */
+	/* "#ae81ff", */
+	/* "#a1efe4", */
+	/* "#f9f8f5", */
+
+	/* hybrid */
+	/* "#282A2E", */
+	/* "#A54242", */
+	/* "#8C9440", */
+	/* "#DE935F", */
+	/* "#5F819D", */
+	/* "#85678F", */
+	/* "#5E8D87", */
+	/* "#707880", */
+	/* "#373B41", */
+	/* "#CC6666", */
+	/* "#B5BD68", */
+	/* "#F0C674", */
+	/* "#81A2BE", */
+	/* "#B294BB", */
+	/* "#8ABEB7", */
+	/* "#C5C8C6", */
+
+	"#272822",
+	"#f92672",
+	"#a6e22e",
+	"#f4bf75",
+	"#66d9ef",
+	"#ae81ff",
+	"#a1efe4",
+	"#f8f8f2",
+	"#75715e",
+	"#fd971f",
+	"#383830",
+	"#49483e",
+	"#a59f85",
+	"#f5f4f1",
+	"#cc6633",
+	"#f9f8f5",
 
 	[255] = 0,
 
-	// more colors can be added after 255 to use with DefaultXX
-	"#cccccc",
-	*/
-
-	/* solarized dark
-	"#073642",  //  0: black
-	"#dc322f",  //  1: red
-	"#859900",  //  2: green
-	"#b58900",  //  3: yellow
-	"#268bd2",  //  4: blue
-	"#d33682",  //  5: magenta
-	"#2aa198",  //  6: cyan
-	"#eee8d5",  //  7: white
-	"#002b36",  //  8: brblack
-	"#cb4b16",  //  9: brred
-	"#586e75",  // 10: brgreen
-	"#657b83",  // 11: bryellow
-	"#839496",  // 12: brblue
-	"#6c71c4",  // 13: brmagenta
-	"#93a1a1",  // 14: brcyan
-	"#fdf6e3",  // 15: brwhite 
-	*/
-
-	/* base 16 */
-
-	base00,
-	base08,
-	base0B,
-	base0A,
-	base0D,
-	base0E,
-	base0C,
-	base05,
-	base03,
-	base08,
-	base0B,
-	base0A,
-	base0D,
-	base0E,
-	base0C,
-	base07,
-
-	[255] = 0,
-
-	base09,
-	base0F,
-	base01,
-	base02,
-	base04,
-	base06,
-
-
+	/* more colors can be added after 255 to use with DefaultXX */
+	"#1D1F21",
+	"#272822",
 };
 
 
 /*
  * Default colors (colorname index)
- * foreground, background, cursor
+ * foreground, background, cursor, reverse cursor
  */
-//static unsigned int defaultfg = 7;
-//static unsigned int defaultbg = 0;
-//static unsigned int defaultcs = 256;
-//static unsigned int defaultfg = 12;
-//static unsigned int defaultbg = 8;
-//static unsigned int defaultcs = 14;
 static unsigned int defaultfg = 7;
 static unsigned int defaultbg = 0;
 static unsigned int defaultcs = 7;
+static unsigned int defaultrcs = 0;
+
+/*
+ * Default shape of cursor
+ * 2: Block ("█")
+ * 4: Underline ("_")
+ * 6: Bar ("|")
+ * 7: Snowman ("☃")
+ */
+static unsigned int cursorshape = 2;
+
+/*
+ * Default colour and shape of the mouse cursor
+ */
+static unsigned int mouseshape = XC_xterm;
+static unsigned int mousefg = 7;
+static unsigned int mousebg = 0;
 
 /*
  * Colors used, when the specific fg == defaultfg. So in reverse mode this
@@ -177,9 +217,11 @@ static unsigned int defaultcs = 7;
 static unsigned int defaultitalic = 11;
 static unsigned int defaultunderline = 7;
 
-/* Internal mouse shortcuts. */
-/* Beware that overloading Button1 will disable the selection. */
-static Mousekey mshortcuts[] = {
+/*
+ * Internal mouse shortcuts.
+ * Beware that overloading Button1 will disable the selection.
+ */
+static MouseShortcut mshortcuts[] = {
 	/* button               mask            string */
 	{ Button4,              XK_ANY_MOD,     "\031" },
 	{ Button5,              XK_ANY_MOD,     "\005" },
@@ -190,6 +232,7 @@ static Mousekey mshortcuts[] = {
 
 static Shortcut shortcuts[] = {
 	/* mask                   keysym          function        argument */
+	{ XK_ANY_MOD,             XK_Break,       sendbreak,      {.i =  0} },
 	{ ControlMask,            XK_Print,       toggleprinter,  {.i =  0} },
 	{ ShiftMask,              XK_Print,       printscreen,    {.i =  0} },
 	{ XK_ANY_MOD,             XK_Print,       printsel,       {.i =  0} },
@@ -240,11 +283,17 @@ static KeySym mappedkeys[] = { -1 };
  */
 static uint ignoremod = Mod2Mask|XK_SWITCH_MOD;
 
-/* Override mouse-select while mask is active (when MODE_MOUSE is set).
+/*
+ * Override mouse-select while mask is active (when MODE_MOUSE is set).
  * Note that if you want to use ShiftMask with selmasks, set this to an other
- * modifier, set to 0 to not use it. */
+ * modifier, set to 0 to not use it.
+ */
 static uint forceselmod = ShiftMask;
 
+/*
+ * This is the huge key array which defines all compatibility to the Linux
+ * world. Please decide about changes wisely.
+ */
 static Key key[] = {
 	/* keysym           mask            string      appkey appcursor crlf */
 	{ XK_KP_Home,       ShiftMask,      "\033[2J",       0,   -1,    0},
@@ -341,6 +390,7 @@ static Key key[] = {
 	{ XK_Delete,        XK_ANY_MOD,     "\033[P",       -1,    0,    0},
 	{ XK_Delete,        XK_ANY_MOD,     "\033[3~",      +1,    0,    0},
 	{ XK_BackSpace,     XK_NO_MOD,      "\177",          0,    0,    0},
+	{ XK_BackSpace,     Mod1Mask,       "\033\177",      0,    0,    0},
 	{ XK_Home,          ShiftMask,      "\033[2J",       0,   -1,    0},
 	{ XK_Home,          ShiftMask,      "\033[1;2H",     0,   +1,    0},
 	{ XK_Home,          XK_ANY_MOD,     "\033[H",        0,   -1,    0},
@@ -454,4 +504,13 @@ static Key key[] = {
 static uint selmasks[] = {
 	[SEL_RECTANGULAR] = Mod1Mask,
 };
+
+/*
+ * Printable characters in ASCII, used to estimate the advance width
+ * of single wide characters.
+ */
+static char ascii_printable[] =
+	" !\"#$%&'()*+,-./0123456789:;<=>?"
+	"@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
+	"`abcdefghijklmnopqrstuvwxyz{|}~";
 
