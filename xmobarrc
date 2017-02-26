@@ -1,0 +1,17 @@
+Config { font = "xft:sans:size=7:bold"
+       , bgColor = "#272822"
+       , fgColor = "#f8f8f2"
+       , position = TopW L 100
+       , commands = [ Run Date "%a %b %_d %l:%M" "date" 10
+                    , Run StdinReader
+                    , Run BatteryP ["BAT0"] ["-t", "<left>%"] 600
+                    , Run Wireless "wlp3s0" ["-t", "<essid> (<quality>)"] 50
+                    , Run Network "enp0s25" ["-t", "<dev>"] 50
+                    , Run CommandReader "/home/judgedreads/bin/volmon default Master" "vol0"
+                    , Run CommandReader "/home/judgedreads/bin/volmon hw:1 PCM" "vol1"
+                    , Run CommandReader "/home/judgedreads/timemon" "time"
+                    ]
+       , sepChar = "%"
+       , alignSep = "}{"
+       , template = "%StdinReader% }{ %wlp3s0wi% | %enp0s25%| %battery% | %vol0% | %vol1% | %time%"
+       }
