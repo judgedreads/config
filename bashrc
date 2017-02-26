@@ -45,6 +45,10 @@ alias l='ls -CF'
 alias zombiehunt='ps axo stat,ppid,pid,comm | grep -w defunct'
 alias open='xdg-open'
 
+function mkcd {
+	mkdir -p $1 && cd $1
+}
+
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
@@ -86,19 +90,14 @@ export EDITOR="vim"
 export TERMINAL="st"
 export PAGER="less"
 source /usr/share/doc/pkgfile/command-not-found.bash
-export PATH=$PATH:/usr/local/go/bin:/home/judgedreads/bin
+export PATH=$PATH:/usr/local/go/bin:/$HOME/bin:/$HOME/.cargo/bin
 
 # keychain
 eval $(keychain --eval --quiet ~/.ssh/id_rsa)
-
-# Base16 Shell
-# BASE16_SHELL="$HOME/.config/base16-shell/scripts/base16-materia.sh"
-BASE16_SHELL="$HOME/.config/base16-shell/scripts/base16-monokai.sh"
-[[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
 
 export PYTHONSTARTUP=~/.python2rc
 export GOPATH=~
 export GO15VENDOREXPERIMENT=1
 
-export FZF_DEFAULT_COMMAND='ag -g ""'
+export FZF_DEFAULT_COMMAND='ag -l'
 export FZF_DEFAULT_OPTS='-e'
