@@ -62,7 +62,7 @@ fi
 
 function git_state {
     STATE=$(git status 2>/dev/null | grep Your | awk '{ print $4 }')
-    BRANCH=$(git status 2>/dev/null | grep "On branch" | awk '{ print $3 }')
+    BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
     if [ "$STATE" == "ahead" ]; then
         echo "$BRANCH [+$(git status 2>/dev/null | grep Your | awk '{ print $8 }')]"
     elif [ "$STATE" == "behind" ]; then
@@ -91,12 +91,14 @@ export TERMINAL="st"
 export PAGER="less"
 source /usr/share/doc/pkgfile/command-not-found.bash
 export PATH=$PATH:/usr/local/go/bin:/$HOME/bin:/$HOME/.cargo/bin
+export COWPATH=$HOME/pokemonsay/cows
+export ANSIBLE_COW_SELECTION=random
 
 # keychain
 eval $(keychain --eval --quiet ~/.ssh/id_rsa)
 
 export PYTHONSTARTUP=~/.python2rc
-export GOPATH=~
+export GOPATH=$HOME
 export GO15VENDOREXPERIMENT=1
 
 export FZF_DEFAULT_COMMAND='ag -l'
