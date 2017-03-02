@@ -428,16 +428,6 @@
         <command>mpc prev</command>
       </action>
     </keybind>
-    <keybind key="XF86MonBrightnessDown">
-      <action name="Execute">
-        <command>sudo /home/judgedreads/bin/brightness down</command>
-      </action>
-    </keybind>
-    <keybind key="XF86MonBrightnessUp">
-      <action name="Execute">
-        <command>sudo /home/judgedreads/bin/brightness up</command>
-      </action>
-    </keybind>
     <keybind key="C-XF86Display">
       <action name="Execute">
         <command>arandr</command>
