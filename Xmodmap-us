@@ -1,3 +1,4 @@
+! vim: ft=xmodmap
 ! Swap caps_lock with backslash
 clear Lock
 keycode 66 = backslash bar

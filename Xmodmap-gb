@@ -1,0 +1,4 @@
+! vim: ft=xmodmap
+! make caps_lock super
+clear Lock
+keycode 66 = Super_L
