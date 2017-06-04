@@ -5,7 +5,7 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char font[] = "monospace:pixelsize=14:antialias=false:autohint=false";
+static char font[] = "monospace:size=8:antialias=false:autohint=false";
 static int borderpx = 2;
 
 /*
@@ -32,7 +32,7 @@ static float chscale = 1.0;
  *
  * More advanced example: " `'\"()[]{}"
  */
-static char worddelimiters[] = " '\"()[]{}|";
+static char worddelimiters[] = " ";
 
 /* selection timeouts (in milliseconds) */
 static unsigned int doubleclicktimeout = 300;
@@ -63,7 +63,7 @@ static unsigned int cursorthickness = 2;
 static int bellvolume = 0;
 
 /* default TERM value */
-static char termname[] = "xterm-256color";
+static char termname[] = "st-256color";
 
 /*
  * spaces per tab
@@ -84,81 +84,6 @@ static unsigned int tabspaces = 8;
 
 /* Terminal colors (16 first used in escape sequence) */
 static const char *colorname[] = {
-	/* 8 normal colors */
-	/* "black", */
-	/* "red3", */
-	/* "green3", */
-	/* "yellow3", */
-	/* "blue2", */
-	/* "magenta3", */
-	/* "cyan3", */
-	/* "gray90", */
-
-	/* /1* 8 bright colors *1/ */
-	/* "gray50", */
-	/* "red", */
-	/* "green", */
-	/* "yellow", */
-	/* "#5c5cff", */
-	/* "magenta", */
-	/* "cyan", */
-	/* "white", */
-
-	/* base16 monokai */
-	/* #272822 //0 */
-	/* #f92672 //8 */
-	/* #a6e22e //b */
-	/* #f4bf75 //a */
-	/* #66d9ef //d */
-	/* #ae81ff //e */
-	/* #a1efe4 //c */
-	/* #f8f8f2 //5 */
-	/* #75715e //3 */
-	/* #fd971f //9 */
-	/* #383830 //1 */
-	/* #49483e //2 */
-	/* #a59f85 //4 */
-	/* #f5f4f1 //6 */
-	/* #cc6633 //f */
-	/* #f9f8f5 //7 */
-
-
-	/* monokai */
-	/* "#272822", */
-	/* "#f92672", */
-	/* "#a6e22e", */
-	/* "#f4bf75", */
-	/* "#66d9ef", */
-	/* "#ae81ff", */
-	/* "#a1efe4", */
-	/* "#f8f8f2", */
-	/* "#75715e", */
-	/* "#f92672", */
-	/* "#a6e22e", */
-	/* "#f4bf75", */
-	/* "#66d9ef", */
-	/* "#ae81ff", */
-	/* "#a1efe4", */
-	/* "#f9f8f5", */
-
-	/* hybrid */
-	/* "#282A2E", */
-	/* "#A54242", */
-	/* "#8C9440", */
-	/* "#DE935F", */
-	/* "#5F819D", */
-	/* "#85678F", */
-	/* "#5E8D87", */
-	/* "#707880", */
-	/* "#373B41", */
-	/* "#CC6666", */
-	/* "#B5BD68", */
-	/* "#F0C674", */
-	/* "#81A2BE", */
-	/* "#B294BB", */
-	/* "#8ABEB7", */
-	/* "#C5C8C6", */
-
 	"#272822",
 	"#f92672",
 	"#a6e22e",
@@ -179,8 +104,8 @@ static const char *colorname[] = {
 	[255] = 0,
 
 	/* more colors can be added after 255 to use with DefaultXX */
-	"#1D1F21",
-	"#272822",
+	"#cccccc",
+	"#555555",
 };
 
 
@@ -231,19 +156,19 @@ static MouseShortcut mshortcuts[] = {
 #define MODKEY Mod1Mask
 
 static Shortcut shortcuts[] = {
-	/* mask                   keysym          function        argument */
-	{ XK_ANY_MOD,             XK_Break,       sendbreak,      {.i =  0} },
-	{ ControlMask,            XK_Print,       toggleprinter,  {.i =  0} },
-	{ ShiftMask,              XK_Print,       printscreen,    {.i =  0} },
-	{ XK_ANY_MOD,             XK_Print,       printsel,       {.i =  0} },
-	{ ControlMask|ShiftMask,  XK_plus,        xzoom,          {.f = +1} },
-	{ ControlMask,            XK_minus,       xzoom,          {.f = -1} },
-	{ ControlMask,            XK_equal,       xzoomreset,     {.f =  0} },
-	{ ShiftMask,              XK_Insert,      selpaste,       {.i =  0} },
-	{ MODKEY|ShiftMask,       XK_Insert,      clippaste,      {.i =  0} },
-	{ MODKEY|ShiftMask,       XK_C,           clipcopy,       {.i =  0} },
-	{ MODKEY|ShiftMask,       XK_V,           clippaste,      {.i =  0} },
-	{ MODKEY,                 XK_Num_Lock,    numlock,        {.i =  0} },
+	/* mask                 keysym          function        argument */
+	{ XK_ANY_MOD,           XK_Break,       sendbreak,      {.i =  0} },
+	{ ControlMask,          XK_Print,       toggleprinter,  {.i =  0} },
+	{ ShiftMask,            XK_Print,       printscreen,    {.i =  0} },
+	{ XK_ANY_MOD,           XK_Print,       printsel,       {.i =  0} },
+	{ MODKEY|ShiftMask,     XK_Prior,       xzoom,          {.f = +1} },
+	{ MODKEY|ShiftMask,     XK_Next,        xzoom,          {.f = -1} },
+	{ MODKEY|ShiftMask,     XK_Home,        xzoomreset,     {.f =  0} },
+	{ ShiftMask,            XK_Insert,      selpaste,       {.i =  0} },
+	{ MODKEY|ShiftMask,     XK_Insert,      clippaste,      {.i =  0} },
+	{ MODKEY|ShiftMask,     XK_C,           clipcopy,       {.i =  0} },
+	{ MODKEY|ShiftMask,     XK_V,           clippaste,      {.i =  0} },
+	{ MODKEY,               XK_Num_Lock,    numlock,        {.i =  0} },
 };
 
 /*
