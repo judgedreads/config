@@ -2,7 +2,7 @@ call plug#begin('~/.vim/bundle')
 Plug 'airblade/vim-gitgutter'
 Plug 'chriskempson/base16-vim'
 Plug 'derekwyatt/vim-scala'
-" Plug 'fatih/vim-go'
+Plug 'fatih/vim-go'
 Plug 'hynek/vim-python-pep8-indent'
 Plug 'IN3D/vim-raml'
 Plug 'junegunn/fzf'
@@ -95,8 +95,11 @@ set textwidth=72
 "disable autowrap (still autowraps in comment blocks)
 set formatoptions-=t
 
-"use ag for searching and file listing
-if executable('ag')
+"use rg/ag for searching and file listing
+if executable('rg')
+  set grepprg=rg\ --vimgrep
+  set grepformat=%f:%l:%c:%m
+elseif executable('ag')
   set grepprg=ag\ --vimgrep\ -s
   set grepformat=%f:%l:%c:%m
 endif
