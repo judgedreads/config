@@ -68,6 +68,11 @@ nmap <Leader>P "+P
 vmap <Leader>p "+p
 vmap <Leader>P "+P
 nnoremap qq <NOP>
+"paste over selection without yanking
+vnoremap p "_dP
+vnoremap c "_c
+nnoremap c "_c
+
 
 "tabs for make files
 autocmd FileType make setlocal noexpandtab
