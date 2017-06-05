@@ -93,6 +93,7 @@ source /usr/share/doc/pkgfile/command-not-found.bash
 export PATH=$PATH:/usr/local/go/bin:/$HOME/bin:/$HOME/.cargo/bin
 export COWPATH=$HOME/pokemonsay/cows
 export ANSIBLE_COW_SELECTION=random
+export CDPATH=.:$GOPATH/src/github.com:$HOME/src
 
 # keychain
 eval $(keychain --eval --quiet ~/.ssh/id_rsa)
@@ -101,5 +102,6 @@ export PYTHONSTARTUP=~/.python2rc
 export GOPATH=$HOME
 export GO15VENDOREXPERIMENT=1
 
-export FZF_DEFAULT_COMMAND='ag -l'
+# export FZF_DEFAULT_COMMAND='ag -l'
+export FZF_DEFAULT_COMMAND='rg --files'
 export FZF_DEFAULT_OPTS='-e'
